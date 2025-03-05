@@ -1,6 +1,9 @@
 <script setup>
 import {ref, computed} from 'vue';
 import Card from '../Card.vue';
+import { useTodoStore } from '../../store/todoStore';
+
+const todoStore = useTodoStore();
 
 const props = defineProps({
     index: Number,
@@ -19,8 +22,7 @@ const editedText = ref(props.text);
 
 const saveEdit = () => {
   if (editedText.value.trim()) {
-    console.log('save edit', editedText.value);
-    emit('update-text', editedText.value.trim());
+    todoStore.updateTodoText(editedText.value.trim(), props.index)
     isEditing.value = false;
   }
 };
@@ -30,7 +32,6 @@ const cancelEdit = () => {
   isEditing.value = false;
 };
 
-const emit = defineEmits(['delete', 'toggle-done', 'update-text']);
 </script>
 
 <template>
@@ -50,8 +51,8 @@ const emit = defineEmits(['delete', 'toggle-done', 'update-text']);
         </template>
         <template #actions>
             <button v-if="!isEditing" @click="isEditing = true">Edit</button>
-            <button v-if="canDelete && !isEditing" @click="$emit('delete')">Delete</button>
-            <button v-if="!isEditing" @click="$emit('toggle-done')">
+            <button v-if="canDelete && !isEditing" @click="todoStore.deleteTodo(index)">Delete</button>
+            <button v-if="!isEditing" @click="todoStore.toggleDone(index)">
                 {{ done ? "Undo" : "Complete" }}
             </button>
         </template>

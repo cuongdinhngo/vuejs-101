@@ -1,15 +1,15 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import ShoppingCartItem from './ShoppingCartItem.vue';
+import { sharedState } from '../../store/sharedState';
 
-const itemList = ref([]);
 const itemName = ref('');
 const itemQuantity = ref('');
 
 const addItem = () => {
     console.log('adding new item ...');
     if (itemName.value) {
-        itemList.value.push({
+        sharedState.itemList.value.push({
             name: itemName.value,
             quantity: itemQuantity.value
         });
@@ -19,16 +19,16 @@ const addItem = () => {
 };
 
 const toggleBought = (index) => {
-  itemList.value[index].bought = !itemList.value[index].bought;
+  sharedState.itemList.value[index].bought = !sharedState.itemList.value[index].bought;
 };
 
 const deleteItem = (index) => {
-  itemList.value.splice(index, 1);
+  sharedState.itemList.value.splice(index, 1);
 };
 
-const totalItems = computed(() => itemList.value.length);
-const boughtCount = computed(() => itemList.value.filter(item => item.bought).length);
-const unboughtCount = computed(() => itemList.value.filter(item => !item.bought).length);
+const totalItems = computed(() => sharedState.itemList.value.length);
+const boughtCount = computed(() => sharedState.itemList.value.filter(item => item.bought).length);
+const unboughtCount = computed(() => sharedState.itemList.value.filter(item => !item.bought).length);
 </script>
 
 <template>
@@ -45,7 +45,7 @@ const unboughtCount = computed(() => itemList.value.filter(item => !item.bought)
         </div>
         <ul>
             <ShoppingCartItem
-                v-for="(item, index) in itemList"
+                v-for="(item, index) in sharedState.itemList.value"
                 :key="item.name"
                 :name="item.name"
                 :quantity="item.quantity"

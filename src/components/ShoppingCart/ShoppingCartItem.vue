@@ -1,4 +1,5 @@
 <script setup>
+import Card from '../Card.vue';
 defineProps({
     name: String,
     quantity: Number,
@@ -8,13 +9,22 @@ defineEmits(['toggle-bought','delete' ]);
 </script>
 
 <template>
-    <li :class="{ 'bought': bought }">
-      {{ name }} (Qty: {{ quantity }})
-      <button @click="$emit('toggle-bought')">
+    <Card>
+      <template #title>
+        <span :class="{ 'bought': bought }">
+          {{ name }}
+        </span>
+      </template>
+      <template #body>
+        Qty: {{ quantity }}
+      </template>
+      <template #actions>
+        <button @click="$emit('toggle-bought')">
         {{ bought ? 'Unmark' : 'Mark Bought' }}
-      </button>
-      <button @click="$emit('delete')">Delete</button>
-    </li>
+        </button>
+        <button @click="$emit('delete')">Delete</button>
+      </template>
+    </Card>
   </template>
 
 <style scoped>
